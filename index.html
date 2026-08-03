@@ -204,6 +204,27 @@
   }
   .servicio-cta:hover { background: var(--verde-claro); }
 
+  /* PLANES - grupos */
+  .planes-group { max-width: 1000px; margin: 0 auto 3.5rem; }
+  .planes-group:last-child { margin-bottom: 0; }
+  .planes-group-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem; color: var(--verde-oscuro);
+    text-align: center; margin-bottom: 1.8rem;
+    padding-bottom: 0.8rem; border-bottom: 2px solid var(--dorado-suave);
+  }
+  .planes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+  .servicio-meta {
+    list-style: none; margin-top: 1.2rem; padding-top: 1.2rem;
+    border-top: 1px dashed #ddd; font-size: 0.85rem; color: #666;
+  }
+  .servicio-meta li { padding: 0.2rem 0; }
+  .servicio-meta li strong { color: var(--verde-oscuro); }
+  .planes-aclaracion {
+    text-align: center; color: #777; font-size: 0.85rem;
+    font-style: italic; margin-top: 2rem;
+  }
+
   /* PRÓXIMAMENTE */
   .pronto-section { background: var(--gris); padding: 4rem 3rem; text-align: center; }
   .pronto-box {
@@ -323,7 +344,7 @@
     </div>
   </div>
   <ul class="nav-links">
-    <li><a href="#servicios">Clases</a></li>
+    <li><a href="#servicios">Planes</a></li>
     <li><a href="#proximamente">Próximamente</a></li>
     <li><a href="#redes">Redes</a></li>
     <li><a href="#contacto">Contacto</a></li>
@@ -336,24 +357,10 @@
   <div class="hero-content">
     <div class="hero-badge">📍 Rosario, Santa Fe</div>
     <h1>Tu <em>éxito académico</em> empieza aquí</h1>
-    <p>Centro de Acompañamiento Estudiantil Rosarino. Clases virtuales grabadas y en vivo para que estudies a tu ritmo, con la guía que necesitás.</p>
+    <p>Centro de Acompañamiento Estudiantil Rosarino, con campus virtual donde tendrás clases grabadas y en vivo para que estudies a tu ritmo, con seguimiento de progreso además de un cuestionario interactivo con más de 2.000 preguntas por materia.</p>
     <div class="hero-btns">
-      <a href="#servicios" class="btn-primary">Ver nuestras clases</a>
+      <a href="#servicios" class="btn-primary">Ver nuestros planes</a>
       <a href="#contacto" class="btn-secondary">Contactarnos</a>
-    </div>
-  </div>
-  <div class="hero-visual">
-    <div class="hero-card">
-      <div class="hero-card-icon">🎥</div>
-      <h3>Clases Grabadas</h3>
-      <p>Accedé a todo el contenido cuando quieras, las veces que quieras.</p>
-      <div class="hero-card-tag">DISPONIBLE AHORA</div>
-    </div>
-    <div class="hero-card hero-card2">
-      <div class="hero-card-icon">🔴</div>
-      <h3>Clases en Vivo</h3>
-      <p>Sesiones virtuales interactivas con docentes en tiempo real.</p>
-      <div class="hero-card-tag">EN VIVO</div>
     </div>
   </div>
 </section>
@@ -378,53 +385,135 @@
   </div>
 </div>
 
-<!-- SERVICIOS -->
+<!-- PLANES -->
 <section class="section" id="servicios">
   <p class="section-label">Lo que ofrecemos</p>
-  <h2 class="section-title">Dos formas de aprender,<br/>un solo objetivo</h2>
-  <p class="section-sub">Elegí la modalidad que mejor se adapte a tu ritmo y necesidades. Ambas están diseñadas para acompañarte durante todo tu proceso educativo.</p>
+  <h2 class="section-title">Planes para vos</h2>
+  <p class="section-sub">Elegí el plan que mejor se adapte a tu situación. Todos incluyen material bibliográfico completo y acceso a nuestra plataforma web de seguimiento.</p>
 
-  <div class="servicios-grid">
-    <!-- GRABADAS -->
-    <div class="servicio-card">
-      <div class="servicio-header grabada">
-        <div class="servicio-badge">Flexible</div>
-        <div class="servicio-icon">🎥</div>
-        <h3>Clases Grabadas</h3>
-        <p>Estudiá a tu propio ritmo. Accedé al contenido cuando quieras, pausá, retrocedé y repasá todas las veces que necesites.</p>
+  <!-- GRUPO: MESA DEL 23/11 -->
+  <div class="planes-group">
+    <h3 class="planes-group-title">CyD — Para mesa del 23/11</h3>
+    <div class="planes-grid">
+      <!-- OPCIÓN 1 -->
+      <div class="servicio-card">
+        <div class="servicio-header grabada">
+          <div class="servicio-badge">Opción 1</div>
+          <div class="servicio-icon">📘</div>
+          <h3>Curso</h3>
+          <p>Todo el material y la plataforma para prepararte a tu ritmo.</p>
+        </div>
+        <div class="servicio-body">
+          <ul class="servicio-features">
+            <li>Mapas conceptuales de cada materia</li>
+            <li>Videos explicativos (una unidad por semana)</li>
+            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Plataforma web con seguimiento de progreso</li>
+            <li>Simulacros por materia para identificar dificultades</li>
+            <li>Introducción propia en cada unidad</li>
+          </ul>
+          <ul class="servicio-meta">
+            <li><strong>Inicio:</strong> semana del 03/08, 10/08 o 17/08</li>
+            <li><strong>Finalización:</strong> semana del 16/11</li>
+            <li><strong>Duración:</strong> 3 meses</li>
+          </ul>
+          <a href="#contacto" class="servicio-cta">Quiero este plan</a>
+        </div>
       </div>
-      <div class="servicio-body">
-        <ul class="servicio-features">
-          <li>Acceso ilimitado al material</li>
-          <li>Podés ver en cualquier dispositivo</li>
-          <li>Repasá antes de los exámenes</li>
-          <li>Contenido actualizado regularmente</li>
-          <li>Sin horarios fijos</li>
-        </ul>
-        <a href="#contacto" class="servicio-cta">Quiero acceder</a>
-      </div>
-    </div>
 
-    <!-- EN VIVO -->
-    <div class="servicio-card">
-      <div class="servicio-header">
-        <div class="servicio-badge">🔴 En Vivo</div>
-        <div class="servicio-icon">💻</div>
-        <h3>Clases Virtuales en Directo</h3>
-        <p>Participá en tiempo real, hacé preguntas, interactuá con docentes y compañeros en un aula virtual dinámica.</p>
-      </div>
-      <div class="servicio-body">
-        <ul class="servicio-features">
-          <li>Interacción directa con el docente</li>
-          <li>Resolución de dudas al instante</li>
-          <li>Clases con grupos reducidos</li>
-          <li>Quedan grabadas para repasar</li>
-          <li>Calendarios flexibles</li>
-        </ul>
-        <a href="#contacto" class="servicio-cta">Quiero anotarme</a>
+      <!-- OPCIÓN 2 -->
+      <div class="servicio-card">
+        <div class="servicio-header">
+          <div class="servicio-badge">Opción 2</div>
+          <div class="servicio-icon">🤝</div>
+          <h3>Curso + Mentoría</h3>
+          <p>Todo el curso, más acompañamiento personalizado semana a semana.</p>
+        </div>
+        <div class="servicio-body">
+          <ul class="servicio-features">
+            <li>Mapas conceptuales de cada materia</li>
+            <li>Videos explicativos (una unidad por semana)</li>
+            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Plataforma web con seguimiento de progreso</li>
+            <li>Introducción propia en cada unidad</li>
+            <li>Evaluación inicial de dificultades y plan de horarios</li>
+            <li>1 a 2 encuentros individuales semanales</li>
+            <li>Consultas por audio de 8:00 a 20:00 hs</li>
+          </ul>
+          <ul class="servicio-meta">
+            <li><strong>Inicio:</strong> semana del 03/08, 10/08 o 17/08</li>
+            <li><strong>Finalización:</strong> semana del 16/11</li>
+            <li><strong>Duración:</strong> 3 meses</li>
+          </ul>
+          <a href="#contacto" class="servicio-cta">Quiero este plan</a>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- GRUPO: INGRESO 2027 -->
+  <div class="planes-group">
+    <h3 class="planes-group-title">CyD — Para ingreso 2027</h3>
+    <div class="planes-grid">
+      <!-- OPCIÓN 1 -->
+      <div class="servicio-card">
+        <div class="servicio-header grabada">
+          <div class="servicio-badge">Opción 1</div>
+          <div class="servicio-icon">📘</div>
+          <h3>Curso</h3>
+          <p>Preparación completa para tu ingreso, a tu ritmo.</p>
+        </div>
+        <div class="servicio-body">
+          <ul class="servicio-features">
+            <li>Un encuentro individual sobre la cursada, la facultad, las mesas de examen y la rutina estudiantil en Rosario</li>
+            <li>Mapas conceptuales de cada materia</li>
+            <li>Videos explicativos (una unidad por semana)</li>
+            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Plataforma web con seguimiento de progreso</li>
+            <li>Simulacros por materia para identificar dificultades</li>
+            <li>Introducción propia en cada unidad</li>
+          </ul>
+          <ul class="servicio-meta">
+            <li><strong>Inicio:</strong> a definir</li>
+            <li><strong>Finalización:</strong> a definir</li>
+            <li><strong>Duración:</strong> 4 meses</li>
+          </ul>
+          <a href="#contacto" class="servicio-cta">Quiero este plan</a>
+        </div>
+      </div>
+
+      <!-- OPCIÓN 2 -->
+      <div class="servicio-card">
+        <div class="servicio-header">
+          <div class="servicio-badge">Opción 2</div>
+          <div class="servicio-icon">🤝</div>
+          <h3>Curso + Mentoría</h3>
+          <p>Todo el curso, más acompañamiento personalizado mes a mes.</p>
+        </div>
+        <div class="servicio-body">
+          <ul class="servicio-features">
+            <li>Un encuentro individual sobre la cursada, la facultad, las mesas de examen y la rutina estudiantil en Rosario</li>
+            <li>Mapas conceptuales de cada materia</li>
+            <li>Videos explicativos (una unidad por semana)</li>
+            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Plataforma web con seguimiento de progreso</li>
+            <li>Introducción propia en cada unidad, con instructivo para elaborar la suya</li>
+            <li>Evaluación inicial de dificultades y plan de horarios</li>
+            <li>1 a 3 encuentros individuales mensuales</li>
+            <li>Consultas por audio de 8:00 a 20:00 hs</li>
+          </ul>
+          <ul class="servicio-meta">
+            <li><strong>Inicio:</strong> a definir</li>
+            <li><strong>Finalización:</strong> a definir</li>
+            <li><strong>Duración:</strong> 3 meses</li>
+          </ul>
+          <a href="#contacto" class="servicio-cta">Quiero este plan</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="planes-aclaracion">Todos los encuentros individuales son online (salvo excepciones).</p>
 </section>
 
 <!-- PRÓXIMAMENTE -->
@@ -527,9 +616,14 @@
       <label>¿Qué modalidad te interesa?</label>
       <select name="modalidad" required>
         <option value="">Seleccioná una opción...</option>
-        <option>Clases Grabadas</option>
-        <option>Clases en Vivo (virtual)</option>
-        <option>Ambas modalidades</option>
+        <optgroup label="Para mesa del 23/11">
+          <option>Mesa 23/11 - Curso</option>
+          <option>Mesa 23/11 - Curso + Mentoría</option>
+        </optgroup>
+        <optgroup label="Para ingreso 2027">
+          <option>Ingreso 2027 - Curso</option>
+          <option>Ingreso 2027 - Curso + Mentoría</option>
+        </optgroup>
         <option>Quiero más información primero</option>
       </select>
     </div>

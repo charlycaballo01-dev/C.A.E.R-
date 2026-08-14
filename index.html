@@ -361,7 +361,16 @@
   @media (max-width: 900px) {
     .hero-visual { display: none; }
     nav { padding: 0.8rem 1.5rem; }
-    .nav-links { display: none; }
+    .nav-links { display: flex; }
+    .nav-links li:not(.nav-download-item) { display: none; }
+    .nav-links .nav-download-item a {
+      display: inline-block;
+      border: 1px solid var(--dorado-claro);
+      border-radius: 4px;
+      padding: 0.4rem 0.7rem;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
     .hero { padding: 7rem 1.5rem 4rem; }
     .section { padding: 4rem 1.5rem; }
     .stats-bar { gap: 2rem; padding: 1.5rem 1rem; }
@@ -389,7 +398,7 @@
     <li><a href="#proximamente">Próximamente</a></li>
     <li><a href="#redes">Redes</a></li>
     <li><a href="#contacto">Contacto</a></li>
-    <li><a href="https://charlycaballo01-dev.github.io/campus/" target="_blank" rel="noopener">Descargar App</a></li>
+    <li class="nav-download-item"><a href="https://charlycaballo01-dev.github.io/campus/" target="_blank" rel="noopener">Descargar App</a></li>
   </ul>
   <a href="#contacto" class="nav-cta">¡Quiero inscribirme!</a>
 </nav>

@@ -2,6 +2,10 @@
  * GlowCursor - vanilla JS glowing cursor trail effect.
  * No build step, no dependencies. Works with a plain <script> tag.
  *
+ * v2: trail points expire with age (so the trail actually fades away
+ * when you stop moving), and rendering is done in a handful of bands
+ * instead of one draw call per point (much lighter on the CPU/GPU).
+ *
  * Usage:
  *   <div id="glow-box" style="position:relative;width:100%;height:500px;background:#050610;"></div>
  *   <script src="glow-cursor.js"></script>
@@ -9,21 +13,18 @@
  *     GlowCursor.init(document.getElementById('glow-box'), {
  *       color: '#95f00c',
  *       secondaryColor: '#f6dd03',
- *       trailLength: 64,
- *       trailWidth: 3,
- *       trailTaper: 0.8,
- *       followSpeed: 0.3,
- *       glowIntensity: 2.5,
- *       glowSpread: 1.2,
+ *       trailWidth: 7,
+ *       trailLifetime: 550,   // ms a point stays visible before fading out
+ *       followSpeed: 0.35,
+ *       glowIntensity: 1.8,
+ *       glowSpread: 1,
  *       hotspot: 0.65,
  *       brightness: 1.6,
  *       opacity: 1,
  *       pulseSpeed: 1.1,
- *       noiseStrength: 0.035,
- *       idleFade: false,
- *       idleTimeout: 700,
- *       fadeDuration: 900,
- *       blendMode: 'screen'
+ *       noiseStrength: 0.02,
+ *       blendMode: 'screen',
+ *       bands: 6              // fewer = faster, more = smoother taper
  *     });
  *   </script>
  */
@@ -55,21 +56,18 @@
     opts = opts || {};
     var color = opts.color || '#95f00c';
     var secondaryColor = opts.secondaryColor || '#f6dd03';
-    var trailLength = opts.trailLength || 64;
-    var trailWidth = opts.trailWidth || 3;
-    var trailTaper = opts.trailTaper != null ? opts.trailTaper : 0.8;
-    var followSpeed = opts.followSpeed != null ? opts.followSpeed : 0.3;
-    var glowIntensity = opts.glowIntensity != null ? opts.glowIntensity : 2.5;
-    var glowSpread = opts.glowSpread != null ? opts.glowSpread : 1.2;
+    var trailWidth = opts.trailWidth != null ? opts.trailWidth : 7;
+    var trailLifetime = opts.trailLifetime != null ? opts.trailLifetime : 550; // ms
+    var followSpeed = opts.followSpeed != null ? opts.followSpeed : 0.35;
+    var glowIntensity = opts.glowIntensity != null ? opts.glowIntensity : 1.8;
+    var glowSpread = opts.glowSpread != null ? opts.glowSpread : 1;
     var hotspot = opts.hotspot != null ? opts.hotspot : 0.65;
     var brightness = opts.brightness != null ? opts.brightness : 1.6;
     var opacity = opts.opacity != null ? opts.opacity : 1;
     var pulseSpeed = opts.pulseSpeed != null ? opts.pulseSpeed : 1.1;
-    var noiseStrength = opts.noiseStrength != null ? opts.noiseStrength : 0.035;
-    var idleFade = !!opts.idleFade;
-    var idleTimeout = opts.idleTimeout != null ? opts.idleTimeout : 700;
-    var fadeDuration = opts.fadeDuration != null ? opts.fadeDuration : 900;
+    var noiseStrength = opts.noiseStrength != null ? opts.noiseStrength : 0.02;
     var blendMode = opts.blendMode || 'screen';
+    var bands = opts.bands != null ? opts.bands : 6; // draw calls per frame; lower = faster
 
     container.style.position = container.style.position || 'relative';
     container.style.overflow = 'hidden';
@@ -79,6 +77,7 @@
     canvas.style.position = 'absolute';
     canvas.style.inset = '0';
     canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '0';
     container.appendChild(canvas);
     var ctx = canvas.getContext('2d');
 
@@ -97,8 +96,7 @@
 
     var target = { x: 0, y: 0 };
     var current = { x: 0, y: 0 };
-    var trail = [];
-    var lastMove = 0;
+    var trail = []; // { x, y, t } - t is the timestamp it was created
     var hasPointer = false;
     var startTime = performance.now();
 
@@ -106,7 +104,6 @@
       var rect = container.getBoundingClientRect();
       target.x = e.clientX - rect.left;
       target.y = e.clientY - rect.top;
-      lastMove = performance.now();
       if (!hasPointer) {
         current.x = target.x;
         current.y = target.y;
@@ -120,6 +117,8 @@
     container.addEventListener('mouseleave', handleLeave);
 
     var rafId;
+    var lastPointPos = null;
+
     function tick() {
       var now = performance.now();
       var rect = container.getBoundingClientRect();
@@ -128,55 +127,70 @@
       if (hasPointer) {
         current.x += (target.x - current.x) * followSpeed;
         current.y += (target.y - current.y) * followSpeed;
-        var nx = current.x + (Math.random() - 0.5) * noiseStrength * 40;
-        var ny = current.y + (Math.random() - 0.5) * noiseStrength * 40;
-        trail.unshift({ x: nx, y: ny });
-        if (trail.length > trailLength) trail.length = trailLength;
-      }
 
-      var idleAlpha = 1;
-      if (idleFade && hasPointer) {
-        var sinceMove = now - lastMove;
-        if (sinceMove > idleTimeout) {
-          idleAlpha = 1 - Math.min(1, (sinceMove - idleTimeout) / fadeDuration);
+        // only add a new trail point if the cursor actually moved a bit -
+        // this is what lets the trail run out and disappear when idle
+        var movedEnough =
+          !lastPointPos ||
+          Math.hypot(current.x - lastPointPos.x, current.y - lastPointPos.y) > 1.2;
+
+        if (movedEnough) {
+          var nx = current.x + (Math.random() - 0.5) * noiseStrength * 40;
+          var ny = current.y + (Math.random() - 0.5) * noiseStrength * 40;
+          trail.unshift({ x: nx, y: ny, t: now });
+          lastPointPos = { x: current.x, y: current.y };
         }
       }
 
-      if (trail.length > 1 && idleAlpha > 0.001) {
+      // drop points once they've aged past their lifetime - this is what
+      // makes the trail fade / shrink away on its own
+      while (trail.length && now - trail[trail.length - 1].t > trailLifetime) {
+        trail.pop();
+      }
+
+      if (trail.length > 1) {
         var pulse = 0.85 + 0.15 * Math.sin(((now - startTime) / 1000) * pulseSpeed * Math.PI * 2);
         ctx.globalCompositeOperation = blendMode;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        for (var i = 0; i < trail.length - 1; i++) {
-          var p0 = trail[i], p1 = trail[i + 1];
-          var progress = i / trail.length;
-          var w = trailWidth * Math.pow(1 - progress, 1 + trailTaper * 2);
-          if (w <= 0.05) continue;
+        // draw in a handful of bands (back to front): each band strokes a
+        // shrinking prefix of the trail (the newest points) with a bigger
+        // width and higher opacity, approximating a tapered glow without
+        // paying for one shadowBlur call per point.
+        for (var band = bands - 1; band >= 0; band--) {
+          var bandFrac = band / (bands - 1); // 1 = whole trail (tail), 0 = just the head
+          var count = Math.max(2, Math.round(trail.length * (1 - bandFrac * 0.85)));
+          var headAgeFrac = 1 - bandFrac; // 0..1, 1 = nearest the head
 
-          var mixT = Math.min(1, progress / Math.max(hotspot, 0.05));
-          var mixed = lerpColor(color, secondaryColor, mixT);
-          var segAlpha = opacity * idleAlpha * (1 - progress) * pulse;
-          if (segAlpha <= 0.005) continue;
+          var w = trailWidth * (0.25 + headAgeFrac * 0.9);
+          var segAlpha = opacity * (0.12 + headAgeFrac * 0.55) * pulse;
+
+          var mixed = lerpColor(color, secondaryColor, Math.min(1, (1 - headAgeFrac) / Math.max(hotspot, 0.05)));
 
           ctx.strokeStyle = rgbString(mixed, brightness, segAlpha);
-          ctx.shadowColor = rgbString(mixed, brightness, Math.min(1, segAlpha * 1.2));
+          ctx.shadowColor = rgbString(mixed, brightness, Math.min(1, segAlpha * 1.3));
           ctx.shadowBlur = glowIntensity * glowSpread * (w + 4) * pulse;
           ctx.lineWidth = w;
+
           ctx.beginPath();
-          ctx.moveTo(p0.x, p0.y);
-          ctx.lineTo(p1.x, p1.y);
+          for (var i = 0; i < count && i < trail.length; i++) {
+            var p = trail[i];
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+          }
           ctx.stroke();
         }
 
+        // bright core dot right at the cursor
         var head = trail[0];
         var coreMixed = lerpColor(color, secondaryColor, hotspot);
-        var coreAlpha = opacity * idleAlpha * pulse;
+        var coreAlpha = opacity * pulse;
         ctx.shadowColor = rgbString(coreMixed, brightness, coreAlpha);
-        ctx.shadowBlur = glowIntensity * glowSpread * trailWidth * 3 * pulse;
+        ctx.shadowBlur = glowIntensity * glowSpread * trailWidth * 2.2 * pulse;
         ctx.fillStyle = rgbString(coreMixed, brightness, coreAlpha);
         ctx.beginPath();
-        ctx.arc(head.x, head.y, Math.max(1, trailWidth * 0.55), 0, Math.PI * 2);
+        ctx.arc(head.x, head.y, Math.max(1, trailWidth * 0.5), 0, Math.PI * 2);
         ctx.fill();
 
         ctx.shadowBlur = 0;

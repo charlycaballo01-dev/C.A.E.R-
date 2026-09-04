@@ -215,7 +215,7 @@
           var count = Math.max(2, Math.round(trail.length * (1 - bandFrac * 0.85)));
           var headAgeFrac = 1 - bandFrac; // 0..1, 1 = nearest the head
 
-          var w = trailWidth * (0.008 + Math.pow(headAgeFrac, 3) * 1.35);
+          var w = trailWidth * (0.005 + Math.pow(headAgeFrac, 5) * 1.3);
           var segAlpha = opacity * (0.12 + headAgeFrac * 0.55) * pulse;
 
           var mixed = lerpColor(color, secondaryColor, Math.min(1, (1 - headAgeFrac) / Math.max(hotspot, 0.05)));

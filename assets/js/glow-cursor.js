@@ -203,55 +203,58 @@
       if (trail.length > 1) {
         var pulse = 0.85 + 0.15 * Math.sin(((now - startTime) / 1000) * pulseSpeed * Math.PI * 2);
         ctx.globalCompositeOperation = blendMode;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
 
-        // draw in a handful of bands (back to front): each band strokes a
-        // shrinking prefix of the trail (the newest points) with a bigger
-        // width and higher opacity, approximating a tapered glow without
-        // paying for one shadowBlur call per point.
-        for (var band = bands - 1; band >= 0; band--) {
-          var bandFrac = band / (bands - 1); // 1 = whole trail (tail), 0 = just the head
-          var count = Math.max(2, Math.round(trail.length * (1 - bandFrac * 0.85)));
-          var headAgeFrac = 1 - bandFrac; // 0..1, 1 = nearest the head
+        var n = trail.length;
+        var coreMixed = lerpColor(color, secondaryColor, hotspot);
+        var tailMixed = lerpColor(color, secondaryColor, 1);
 
-          var w = trailWidth * (0.005 + Math.pow(headAgeFrac, 5) * 1.3);
-          var segAlpha = opacity * (0.12 + headAgeFrac * 0.55) * pulse;
-
-          var mixed = lerpColor(color, secondaryColor, Math.min(1, (1 - headAgeFrac) / Math.max(hotspot, 0.05)));
-
-          ctx.strokeStyle = rgbString(mixed, brightness, segAlpha);
-          ctx.shadowColor = rgbString(mixed, brightness, Math.min(1, segAlpha * 1.3));
-          ctx.shadowBlur = glowIntensity * glowSpread * w * pulse;
-          ctx.lineWidth = w;
-
-          ctx.beginPath();
-          var pointCount = Math.min(count, trail.length);
-          if (pointCount === 2) {
-            ctx.moveTo(trail[0].x, trail[0].y);
-            ctx.lineTo(trail[1].x, trail[1].y);
-          } else if (pointCount > 2) {
-            ctx.moveTo(trail[0].x, trail[0].y);
-            for (var i = 0; i < pointCount - 2; i++) {
-              var p1 = trail[i];
-              var p2 = trail[i + 1];
-              var midX = (p1.x + p2.x) / 2;
-              var midY = (p1.y + p2.y) / 2;
-              ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
-            }
-            var last = trail[pointCount - 1];
-            var prev = trail[pointCount - 2];
-            ctx.quadraticCurveTo(prev.x, prev.y, last.x, last.y);
-          }
-          ctx.stroke();
+        // build a tapered ribbon: an offset polygon around the path whose
+        // half-width shrinks from the head down to ~0 at the tail, so the
+        // narrowing is real geometry (not an illusion from overlapping blur)
+        var leftPts = new Array(n);
+        var rightPts = new Array(n);
+        for (var i = 0; i < n; i++) {
+          var p = trail[i];
+          var pPrev = trail[i - 1] || p;
+          var pNext = trail[i + 1] || p;
+          var dx = pNext.x - pPrev.x;
+          var dy = pNext.y - pPrev.y;
+          var segLen = Math.hypot(dx, dy) || 1;
+          var nx = -dy / segLen;
+          var ny = dx / segLen;
+          var ageFrac = 1 - i / (n - 1); // 1 at head, 0 at tail
+          var halfW = (trailWidth * Math.pow(ageFrac, 1.7)) / 2;
+          leftPts[i] = { x: p.x + nx * halfW, y: p.y + ny * halfW };
+          rightPts[i] = { x: p.x - nx * halfW, y: p.y - ny * halfW };
         }
+
+        ctx.beginPath();
+        ctx.moveTo(leftPts[0].x, leftPts[0].y);
+        for (var i2 = 1; i2 < n; i2++) ctx.lineTo(leftPts[i2].x, leftPts[i2].y);
+        for (var i3 = n - 1; i3 >= 0; i3--) ctx.lineTo(rightPts[i3].x, rightPts[i3].y);
+        ctx.closePath();
+
+        var grad = ctx.createLinearGradient(trail[0].x, trail[0].y, trail[n - 1].x, trail[n - 1].y);
+        grad.addColorStop(0, rgbString(coreMixed, brightness, opacity * pulse));
+        grad.addColorStop(0.6, rgbString(tailMixed, brightness, opacity * pulse * 0.5));
+        grad.addColorStop(1, rgbString(tailMixed, brightness, 0));
+
+        // soft glow pass - a single blurred fill instead of many blurred strokes
+        ctx.save();
+        ctx.filter = 'blur(' + Math.max(0.5, glowIntensity * glowSpread * 2) + 'px)';
+        ctx.fillStyle = grad;
+        ctx.fill();
+        ctx.restore();
+
+        // crisp pass on top so the taper itself stays sharp and visible
+        ctx.fillStyle = grad;
+        ctx.fill();
 
         // bright core dot right at the cursor
         var head = trail[0];
-        var coreMixed = lerpColor(color, secondaryColor, hotspot);
         var coreAlpha = opacity * pulse;
         ctx.shadowColor = rgbString(coreMixed, brightness, coreAlpha);
-        ctx.shadowBlur = glowIntensity * glowSpread * trailWidth * 2.2 * pulse;
+        ctx.shadowBlur = glowIntensity * glowSpread * trailWidth * 1.4 * pulse;
         ctx.fillStyle = rgbString(coreMixed, brightness, coreAlpha);
         ctx.beginPath();
         ctx.arc(head.x, head.y, Math.max(1, trailWidth * 0.85), 0, Math.PI * 2);

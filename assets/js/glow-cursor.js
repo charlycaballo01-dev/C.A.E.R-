@@ -144,8 +144,19 @@
     }
     function handleLeave() { hasPointer = false; }
 
+    function handleTouch(e) {
+      if (!e.touches || !e.touches.length) return;
+      var t = e.touches[0];
+      handleMove({ clientX: t.clientX, clientY: t.clientY });
+    }
+    function handleTouchEnd() { hasPointer = false; }
+
     var moveTarget = fullPage ? window : container;
     moveTarget.addEventListener('mousemove', handleMove);
+    moveTarget.addEventListener('touchstart', handleTouch, { passive: true });
+    moveTarget.addEventListener('touchmove', handleTouch, { passive: true });
+    moveTarget.addEventListener('touchend', handleTouchEnd);
+    moveTarget.addEventListener('touchcancel', handleTouchEnd);
     if (!fullPage) container.addEventListener('mouseenter', handleMove);
     if (!fullPage) container.addEventListener('mouseleave', handleLeave);
 
@@ -204,7 +215,7 @@
           var count = Math.max(2, Math.round(trail.length * (1 - bandFrac * 0.85)));
           var headAgeFrac = 1 - bandFrac; // 0..1, 1 = nearest the head
 
-          var w = trailWidth * (0.06 + Math.pow(headAgeFrac, 1.6) * 1.3);
+          var w = trailWidth * (0.02 + Math.pow(headAgeFrac, 2.2) * 1.35);
           var segAlpha = opacity * (0.12 + headAgeFrac * 0.55) * pulse;
 
           var mixed = lerpColor(color, secondaryColor, Math.min(1, (1 - headAgeFrac) / Math.max(hotspot, 0.05)));
@@ -243,7 +254,7 @@
         ctx.shadowBlur = glowIntensity * glowSpread * trailWidth * 2.2 * pulse;
         ctx.fillStyle = rgbString(coreMixed, brightness, coreAlpha);
         ctx.beginPath();
-        ctx.arc(head.x, head.y, Math.max(1, trailWidth * 0.68), 0, Math.PI * 2);
+        ctx.arc(head.x, head.y, Math.max(1, trailWidth * 0.85), 0, Math.PI * 2);
         ctx.fill();
 
         ctx.shadowBlur = 0;
@@ -260,6 +271,10 @@
         if (ro) ro.disconnect();
         if (fullPage) window.removeEventListener('resize', resize);
         moveTarget.removeEventListener('mousemove', handleMove);
+        moveTarget.removeEventListener('touchstart', handleTouch);
+        moveTarget.removeEventListener('touchmove', handleTouch);
+        moveTarget.removeEventListener('touchend', handleTouchEnd);
+        moveTarget.removeEventListener('touchcancel', handleTouchEnd);
         if (!fullPage) {
           container.removeEventListener('mouseenter', handleMove);
           container.removeEventListener('mouseleave', handleLeave);

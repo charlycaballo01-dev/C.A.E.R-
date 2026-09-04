@@ -47,8 +47,8 @@
 <main id="contenido-principal">
 
 <!-- HERO -->
-<section class="hero" id="glow-hero" style="position:relative; overflow:hidden;">
-  <div class="hero-content" style="position:relative; z-index:1;">
+<section class="hero">
+  <div class="hero-content">
     <div class="hero-badge">📍 Rosario, Santa Fe</div>
     <h1>Tu <em>éxito académico</em> empieza aquí</h1>
     <p>Centro de Acompañamiento Estudiantil Rosarino, con campus virtual donde tendrás clases grabadas y en vivo para que estudies a tu ritmo, con seguimiento de progreso además de un cuestionario interactivo con más de 2.000 preguntas por materia.</p>
@@ -360,32 +360,5 @@
 
 <script type="module" src="assets/js/firebase-avisos.js"></script>
 <script src="assets/js/main.js" defer></script>
-<script src="assets/js/glow-cursor.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var heroEl = document.getElementById('glow-hero');
-    if (heroEl && window.GlowCursor) {
-      window.GlowCursor.init(heroEl, {
-        color: '#95f00c',
-        secondaryColor: '#f6dd03',
-        trailLength: 64,
-        trailWidth: 3,
-        trailTaper: 0.8,
-        followSpeed: 0.3,
-        glowIntensity: 2.5,
-        glowSpread: 1.2,
-        hotspot: 0.65,
-        brightness: 1.6,
-        opacity: 1,
-        pulseSpeed: 1.1,
-        noiseStrength: 0.035,
-        idleFade: false,
-        idleTimeout: 700,
-        fadeDuration: 900,
-        blendMode: 'screen'
-      });
-    }
-  });
-</script>
 </body>
 </html>

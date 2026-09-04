@@ -163,7 +163,7 @@
           var count = Math.max(2, Math.round(trail.length * (1 - bandFrac * 0.85)));
           var headAgeFrac = 1 - bandFrac; // 0..1, 1 = nearest the head
 
-          var w = trailWidth * (0.25 + headAgeFrac * 0.9);
+          var w = trailWidth * (0.06 + Math.pow(headAgeFrac, 1.6) * 1.3);
           var segAlpha = opacity * (0.12 + headAgeFrac * 0.55) * pulse;
 
           var mixed = lerpColor(color, secondaryColor, Math.min(1, (1 - headAgeFrac) / Math.max(hotspot, 0.05)));
@@ -190,7 +190,7 @@
         ctx.shadowBlur = glowIntensity * glowSpread * trailWidth * 2.2 * pulse;
         ctx.fillStyle = rgbString(coreMixed, brightness, coreAlpha);
         ctx.beginPath();
-        ctx.arc(head.x, head.y, Math.max(1, trailWidth * 0.5), 0, Math.PI * 2);
+        ctx.arc(head.x, head.y, Math.max(1, trailWidth * 0.68), 0, Math.PI * 2);
         ctx.fill();
 
         ctx.shadowBlur = 0;

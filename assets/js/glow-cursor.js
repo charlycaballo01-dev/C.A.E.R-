@@ -68,10 +68,21 @@
     var noiseStrength = opts.noiseStrength != null ? opts.noiseStrength : 0.02;
     var blendMode = opts.blendMode || 'screen';
     var bands = opts.bands != null ? opts.bands : 6; // draw calls per frame; lower = faster
+    var fullPage = !!opts.fullPage;
 
-    container.style.position = container.style.position || 'relative';
-    container.style.overflow = 'hidden';
-    container.style.cursor = 'none';
+    if (fullPage) {
+      container.style.position = 'fixed';
+      container.style.inset = '0';
+      container.style.width = '100vw';
+      container.style.height = '100vh';
+      container.style.zIndex = opts.zIndex || '9999';
+      container.style.pointerEvents = 'none';
+      container.style.overflow = 'hidden';
+    } else {
+      container.style.position = container.style.position || 'relative';
+      container.style.overflow = 'hidden';
+    }
+    container.style.cursor = fullPage ? '' : 'none';
 
     var canvas = document.createElement('canvas');
     canvas.style.position = 'absolute';
@@ -82,17 +93,30 @@
     var ctx = canvas.getContext('2d');
 
     function resize() {
-      var rect = container.getBoundingClientRect();
+      var w, h;
+      if (fullPage) {
+        w = window.innerWidth;
+        h = window.innerHeight;
+      } else {
+        var rect = container.getBoundingClientRect();
+        w = rect.width;
+        h = rect.height;
+      }
       var dpr = window.devicePixelRatio || 1;
-      canvas.width = rect.width * dpr;
-      canvas.height = rect.height * dpr;
-      canvas.style.width = rect.width + 'px';
-      canvas.style.height = rect.height + 'px';
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
     resize();
-    var ro = new ResizeObserver(resize);
-    ro.observe(container);
+    var ro = null;
+    if (fullPage) {
+      window.addEventListener('resize', resize);
+    } else {
+      ro = new ResizeObserver(resize);
+      ro.observe(container);
+    }
 
     var target = { x: 0, y: 0 };
     var current = { x: 0, y: 0 };
@@ -101,9 +125,17 @@
     var startTime = performance.now();
 
     function handleMove(e) {
-      var rect = container.getBoundingClientRect();
-      target.x = e.clientX - rect.left;
-      target.y = e.clientY - rect.top;
+      var x, y;
+      if (fullPage) {
+        x = e.clientX;
+        y = e.clientY;
+      } else {
+        var rect = container.getBoundingClientRect();
+        x = e.clientX - rect.left;
+        y = e.clientY - rect.top;
+      }
+      target.x = x;
+      target.y = y;
       if (!hasPointer) {
         current.x = target.x;
         current.y = target.y;
@@ -112,17 +144,26 @@
     }
     function handleLeave() { hasPointer = false; }
 
-    container.addEventListener('mousemove', handleMove);
-    container.addEventListener('mouseenter', handleMove);
-    container.addEventListener('mouseleave', handleLeave);
+    var moveTarget = fullPage ? window : container;
+    moveTarget.addEventListener('mousemove', handleMove);
+    if (!fullPage) container.addEventListener('mouseenter', handleMove);
+    if (!fullPage) container.addEventListener('mouseleave', handleLeave);
 
     var rafId;
     var lastPointPos = null;
 
     function tick() {
       var now = performance.now();
-      var rect = container.getBoundingClientRect();
-      ctx.clearRect(0, 0, rect.width, rect.height);
+      var w, h;
+      if (fullPage) {
+        w = window.innerWidth;
+        h = window.innerHeight;
+      } else {
+        var rect = container.getBoundingClientRect();
+        w = rect.width;
+        h = rect.height;
+      }
+      ctx.clearRect(0, 0, w, h);
 
       if (hasPointer) {
         current.x += (target.x - current.x) * followSpeed;
@@ -174,10 +215,22 @@
           ctx.lineWidth = w;
 
           ctx.beginPath();
-          for (var i = 0; i < count && i < trail.length; i++) {
-            var p = trail[i];
-            if (i === 0) ctx.moveTo(p.x, p.y);
-            else ctx.lineTo(p.x, p.y);
+          var pointCount = Math.min(count, trail.length);
+          if (pointCount === 2) {
+            ctx.moveTo(trail[0].x, trail[0].y);
+            ctx.lineTo(trail[1].x, trail[1].y);
+          } else if (pointCount > 2) {
+            ctx.moveTo(trail[0].x, trail[0].y);
+            for (var i = 0; i < pointCount - 2; i++) {
+              var p1 = trail[i];
+              var p2 = trail[i + 1];
+              var midX = (p1.x + p2.x) / 2;
+              var midY = (p1.y + p2.y) / 2;
+              ctx.quadraticCurveTo(p1.x, p1.y, midX, midY);
+            }
+            var last = trail[pointCount - 1];
+            var prev = trail[pointCount - 2];
+            ctx.quadraticCurveTo(prev.x, prev.y, last.x, last.y);
           }
           ctx.stroke();
         }
@@ -204,10 +257,13 @@
     return {
       destroy: function () {
         cancelAnimationFrame(rafId);
-        ro.disconnect();
-        container.removeEventListener('mousemove', handleMove);
-        container.removeEventListener('mouseenter', handleMove);
-        container.removeEventListener('mouseleave', handleLeave);
+        if (ro) ro.disconnect();
+        if (fullPage) window.removeEventListener('resize', resize);
+        moveTarget.removeEventListener('mousemove', handleMove);
+        if (!fullPage) {
+          container.removeEventListener('mouseenter', handleMove);
+          container.removeEventListener('mouseleave', handleLeave);
+        }
         container.removeChild(canvas);
       }
     };

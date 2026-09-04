@@ -21,6 +21,7 @@
 <link rel="stylesheet" href="assets/css/styles.css"/>
 </head>
 <body>
+<div id="glow-fullpage"></div>
 <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
 
 <!-- NAVEGACIÓN -->
@@ -47,8 +48,8 @@
 <main id="contenido-principal">
 
 <!-- HERO -->
-<section class="hero" id="glow-hero" style="position:relative; overflow:hidden;">
-  <div class="hero-content" style="position:relative; z-index:1;">
+<section class="hero">
+  <div class="hero-content">
     <div class="hero-badge">📍 Rosario, Santa Fe</div>
     <h1>Tu <em>éxito académico</em> empieza aquí</h1>
     <p>Centro de Acompañamiento Estudiantil Rosarino, con campus virtual donde tendrás clases grabadas y en vivo para que estudies a tu ritmo, con seguimiento de progreso además de un cuestionario interactivo con más de 2.000 preguntas por materia.</p>
@@ -363,7 +364,7 @@
 <script src="assets/js/glow-cursor.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    var heroEl = document.getElementById('glow-hero');
+    var heroEl = document.getElementById('glow-fullpage');
     if (heroEl && window.GlowCursor) {
       window.GlowCursor.init(heroEl, {
         color: '#0af521',
@@ -379,7 +380,8 @@
         pulseSpeed: 1.1,
         noiseStrength: 0.035,
         blendMode: 'screen',
-        bands: 6
+        bands: 6,
+        fullPage: true
       });
     }
   });

@@ -1,0 +1,12 @@
+Atlas anatómico C.A.E.R.
+
+Modelos 3D de base: BodyParts3D, © 2008 Life Science Integrated Database Center (DBCLS), Japón.
+Licencia: Creative Commons Atribución-CompartirIgual 2.1 Japón (CC BY-SA 2.1 JP)
+https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es
+
+Imágenes derivadas (renders de frente, versión femenina adaptada, vasos de las extremidades,
+útero, trompas y ovarios modelados, mapas de piezas): C.A.E.R., bajo la misma licencia CC BY-SA 2.1 JP.
+
+Condiciones: mantener visible el crédito (ya está debajo de la figura) y, si alguien reutiliza
+o modifica estas imágenes, debe compartirlas con la misma licencia. El resto del sitio (textos,
+diseño, código) no queda alcanzado por esta licencia.

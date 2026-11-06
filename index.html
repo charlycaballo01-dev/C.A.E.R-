@@ -19,9 +19,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "EducationalOrganization", "name": "C.A.E.R.", "alternateName": "Centro de Acompañamiento Estudiantil Rosarino", "url": "https://caerosarino.com/", "areaServed": {"@type": "Country", "name": "Argentina"}, "inLanguage": "es-AR"}</script>
 <link rel="stylesheet" href="assets/css/styles.css"/>
+<link rel="stylesheet" href="assets/css/atlas.css"/>
 </head>
 <body>
-<div id="glow-fullpage"></div>
 <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
 
 <!-- NAVEGACIÓN -->
@@ -57,6 +57,23 @@
       <a href="#servicios" class="btn-primary">Ver nuestros planes</a>
       <a href="#contacto" class="btn-secondary">Contactarnos</a>
     </div>
+  </div>
+  <!-- ATLAS ANATÓMICO 360° -->
+  <div class="atlas-wrap">
+   <div class="atlas-bar">
+    <div class="seg" role="group" aria-label="Capa"><button type="button" data-layer="0">Esqueleto</button><button type="button" data-layer="1">Músculos</button><button type="button" data-layer="2">Circulatorio</button><button type="button" data-layer="3">Órganos</button></div>
+    <div class="seg" role="group" aria-label="Sexo"><button type="button" data-sex="m">Hombre</button><button type="button" data-sex="f">Mujer</button></div>
+   </div>
+   <div id="atlas" tabindex="0" role="group" aria-label="Atlas del cuerpo humano. Arrastrá o usá las flechas para girar; Enter cambia de capa.">
+    <canvas class="fr" id="atlasA" aria-hidden="true"></canvas><canvas class="fr" id="atlasB" aria-hidden="true"></canvas>
+    <canvas id="atlasOver" aria-hidden="true"></canvas><svg id="atlasLead" aria-hidden="true"></svg>
+    <div class="atlas-tip" id="atlasTip" role="status" aria-live="polite"><span class="n"></span><span class="t"></span><span class="i"></span></div>
+   </div>
+   <div class="atlas-rot"><button type="button" id="rotL" aria-label="Girar a la izquierda">⟲</button><span class="atlas-side" id="atlasSide" aria-live="polite">Vista anterior</span><button type="button" id="rotR" aria-label="Girar a la derecha">⟳</button><button type="button" id="rotFB">Frente / Espalda</button></div>
+   <div class="atlas-prog" id="atlasProg"></div>
+   <div class="atlas-hint">Arrastrá para girar · Pasá el mouse para ver cada estructura · Clic en el cuerpo para cambiar de capa</div>
+   <div class="atlas-cred">Modelos 3D: BodyParts3D © 2008 DBCLS · <a href="https://creativecommons.org/licenses/by-sa/2.1/jp/deed.es" target="_blank" rel="noopener">CC BY-SA 2.1 JP</a> · versión femenina y vasos de las extremidades adaptados por C.A.E.R.</div>
+   <p class="sr" id="atlasStatus" aria-live="polite"></p>
   </div>
 </section>
 
@@ -98,7 +115,7 @@
           <h3>Curso</h3>
           <p>Todo el material y la plataforma para prepararte a tu ritmo.</p>
           </div>
-          <div class="servicio-header-img"><img src="assets/img/plataforma-curso.jpg" alt="Plataforma y videos del curso" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div class="servicio-header-img"><img src="assets/img/plataforma-campus.jpg" alt="Campus virtual C.A.E.R. en celular y notebook" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
         </div>
         <div class="servicio-body">
           <ul class="servicio-features">
@@ -124,7 +141,7 @@
           <h3>Curso + Mentoría</h3>
           <p>Todo el curso, más acompañamiento personalizado semana a semana.</p>
           </div>
-          <div class="servicio-header-img"><img src="assets/img/mentoria-acompanamiento.jpg" alt="Acompañamiento y mentoría personalizada" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div class="servicio-header-img"><img src="assets/img/mentoria-videollamada.jpg" alt="Mentoría personalizada por videollamada" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
         </div>
         <div class="servicio-body">
           <ul class="servicio-features">
@@ -158,7 +175,7 @@
           <h3>Curso</h3>
           <p>Preparación completa para tu ingreso, a tu ritmo.</p>
           </div>
-          <div class="servicio-header-img"><img src="assets/img/plataforma-curso.jpg" alt="Plataforma y videos del curso" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div class="servicio-header-img"><img src="assets/img/plataforma-campus.jpg" alt="Campus virtual C.A.E.R. en celular y notebook" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
         </div>
         <div class="servicio-body">
           <ul class="servicio-features">
@@ -187,7 +204,7 @@
           <h3>Curso + Mentoría</h3>
           <p>Todo el curso, más acompañamiento personalizado mes a mes.</p>
           </div>
-          <div class="servicio-header-img"><img src="assets/img/mentoria-acompanamiento.jpg" alt="Acompañamiento y mentoría personalizada" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+          <div class="servicio-header-img"><img src="assets/img/mentoria-videollamada.jpg" alt="Mentoría personalizada por videollamada" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
         </div>
         <div class="servicio-body">
           <ul class="servicio-features">
@@ -357,30 +374,8 @@
 
 <script type="module" src="assets/js/firebase-avisos.js"></script>
 <script src="assets/js/main.js" defer></script>
-<script src="assets/js/glow-cursor.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var heroEl = document.getElementById('glow-fullpage');
-    if (heroEl && window.GlowCursor) {
-      window.GlowCursor.init(heroEl, {
-        color: '#0af521',
-        secondaryColor: '#f8fc06',
-        trailWidth: 11,
-        trailLifetime: 900,
-        followSpeed: 0.16,
-        glowIntensity: 1.9,
-        glowSpread: 1.2,
-        hotspot: 0.65,
-        brightness: 1.25,
-        opacity: 1,
-        pulseSpeed: 1.1,
-        noiseStrength: 0.035,
-        blendMode: 'screen',
-        bands: 9,
-        fullPage: true
-      });
-    }
-  });
-</script>
+<script>window.ATLAS_BASE = 'assets/atlas/';</script>
+<script src="assets/js/atlas360.js" defer></script>
+
 </body>
 </html>

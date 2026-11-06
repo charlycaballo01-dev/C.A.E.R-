@@ -20,6 +20,22 @@
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "EducationalOrganization", "name": "C.A.E.R.", "alternateName": "Centro de Acompañamiento Estudiantil Rosarino", "url": "https://caerosarino.com/", "areaServed": {"@type": "Country", "name": "Argentina"}, "inLanguage": "es-AR"}</script>
 <link rel="stylesheet" href="assets/css/styles.css"/>
 <link rel="stylesheet" href="assets/css/atlas.css"/>
+<style id="marco-dorado">
+  .servicio-card{position:relative;border:7px solid transparent;
+    background:linear-gradient(#fff,#fff) padding-box,
+      linear-gradient(115deg,#c9971a 0%,#f5c542 16%,#fff6c8 28%,#f5c542 40%,#d9a520 55%,#ffe27a 70%,#f5c542 85%,#c9971a 100%) border-box;
+    background-size:100% 100%,300% 300%;
+    animation:marcoOro 6s linear infinite;
+    box-shadow:0 0 0 1px rgba(255,226,122,.35),0 0 22px rgba(245,197,66,.55),0 6px 30px rgba(0,0,0,.12)}
+  .servicio-card:hover{box-shadow:0 0 0 1px rgba(255,236,160,.6),0 0 28px rgba(245,197,66,.6),0 14px 40px rgba(0,0,0,.16)}
+  .servicio-card::after{content:"";position:absolute;inset:-7px;border-radius:inherit;pointer-events:none;
+    padding:7px;-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;
+    background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.95) 50%,transparent 60%) 0 0/250% 100% no-repeat;
+    animation:brilloOro 3.2s ease-in-out infinite}
+  @keyframes marcoOro{to{background-position:0 0,300% 0}}
+  @keyframes brilloOro{0%{background-position:150% 0}60%,100%{background-position:-150% 0}}
+  @media (prefers-reduced-motion:reduce){.servicio-card,.servicio-card::after{animation:none}}
+</style>
 </head>
 <body>
 <a class="skip-link" href="#contenido-principal">Saltar al contenido principal</a>
@@ -120,8 +136,8 @@
         <div class="servicio-body">
           <ul class="servicio-features">
             <li>Mapas conceptuales de cada materia</li>
-            <li>Videos explicativos (una unidad por semana)</li>
-            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Clases grabadas (una unidad por semana)</li>
+            <li>Material en PDF escrito con todo el contenido, claro y organizado</li>
             <li>Plataforma web con seguimiento de progreso</li>
             <li>Simulacros por materia para identificar dificultades</li>
             <li>Introducción propia en cada unidad</li>
@@ -146,8 +162,8 @@
         <div class="servicio-body">
           <ul class="servicio-features">
             <li>Mapas conceptuales de cada materia</li>
-            <li>Videos explicativos (una unidad por semana)</li>
-            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Clases grabadas (una unidad por semana)</li>
+            <li>Material en PDF escrito con todo el contenido, claro y organizado</li>
             <li>Plataforma web con seguimiento de progreso</li>
             <li>Introducción propia en cada unidad</li>
             <li>Evaluación inicial de dificultades y plan de horarios</li>
@@ -181,8 +197,8 @@
           <ul class="servicio-features">
             <li>Un encuentro individual sobre la cursada, la facultad, las mesas de examen y la rutina estudiantil en Rosario</li>
             <li>Mapas conceptuales de cada materia</li>
-            <li>Videos explicativos (una unidad por semana)</li>
-            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Clases grabadas (una unidad por semana)</li>
+            <li>Material en PDF escrito con todo el contenido, claro y organizado</li>
             <li>Plataforma web con seguimiento de progreso</li>
             <li>Simulacros por materia para identificar dificultades</li>
             <li>Introducción propia en cada unidad</li>
@@ -190,7 +206,7 @@
           <ul class="servicio-meta">
             <li><strong>Inicio:</strong> a definir</li>
             <li><strong>Finalización:</strong> a definir</li>
-            <li><strong>Duración:</strong> 4 meses</li>
+            <li><strong>Duración:</strong> Mensual</li>
           </ul>
           <a href="#contacto" class="servicio-cta">Quiero este plan</a>
         </div>
@@ -210,8 +226,8 @@
           <ul class="servicio-features">
             <li>Un encuentro individual sobre la cursada, la facultad, las mesas de examen y la rutina estudiantil en Rosario</li>
             <li>Mapas conceptuales de cada materia</li>
-            <li>Videos explicativos (una unidad por semana)</li>
-            <li>Material escrito con todo el contenido, claro y organizado</li>
+            <li>Clases grabadas (una unidad por semana)</li>
+            <li>Material en PDF escrito con todo el contenido, claro y organizado</li>
             <li>Plataforma web con seguimiento de progreso</li>
             <li>Introducción propia en cada unidad, con instructivo para elaborar la suya</li>
             <li>Evaluación inicial de dificultades y plan de horarios</li>
@@ -221,7 +237,7 @@
           <ul class="servicio-meta">
             <li><strong>Inicio:</strong> a definir</li>
             <li><strong>Finalización:</strong> a definir</li>
-            <li><strong>Duración:</strong> 3 meses</li>
+            <li><strong>Duración:</strong> Mensual</li>
           </ul>
           <a href="#contacto" class="servicio-cta">Quiero este plan</a>
         </div>
